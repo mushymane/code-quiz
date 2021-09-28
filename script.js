@@ -10,3 +10,4 @@
 // save initials and score -> submit, taken to highscores page
 
 // highscores page: show all highscores, go back and clear highscores buttons
+
