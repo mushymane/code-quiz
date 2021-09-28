@@ -13,13 +13,19 @@
 <body>
     <div class="wrapper">
         <header>
-            <h1>Code Quiz</h1>
-            <p>Answer the following questions and beat the time limit. You get one point for answering correctly,
-                and lose 10 seconds for answering incorrectly! Good luck!
-            </p>
+            <div id="highscores"><a href="#">View Highscores</a></div> <!--highscores.html-->
+            <div class="timer"><p>Time left: <span id="time-left">0</span></p></div>
         </header>
         <div class="card">
-            
+            <div class="card header">
+                <h1>Code Quiz</h1>
+                <h2>Answer the following questions and beat the time limit. You get one point for answering correctly,
+                and lose 10 seconds for answering incorrectly! Good luck!</h2>
+            </div>
+            <div class="card-content"></div>
+            <div class="card-footer">
+                <button class="start-btn">Start Quiz</button>
+            </div>
         </div>
     </div>
     
