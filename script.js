@@ -8,27 +8,32 @@
 // correct answer -> display message/wrong answer -> display message + subtract time
 // game over when all questions are answered or timer reaches 0
 // save initials and score -> submit, taken to highscores page
-
 // highscores page: show all highscores, go back and clear highscores buttons
+
 // var timeEl = document.querySelector("#time");
 // var cardEl = document.querySelector(".card");
 // var startBtnEl = document.querySelector(".start-btn");
 
-var timeLeft = 60;
-var questionsAnswered = 0;
-var score = 0;
+// var timeLeft = 60;
+// var questionsAnswered = 0;
+// var score = 0;
 
 
 
 // startBtnEl.addEventListener("click", function() {
-//     if (count > 0) {
-//       count--;
-//       setCounterText();
+//     if (timeLeft > 0) {
+//         count--;
+//         runGame();
 //     }
 // });
 
 function runGame() {
-
+    var randomizedQuestions = [];
+    for (let i = 0; i < 10; i++) {
+        var randomNumber = Math.floor(Math.random() * questions.length);
+        randomizedQuestions.push(questions[randomNumber]);
+    }
+    
 }
 
 // Answer: a4
@@ -60,7 +65,7 @@ var q3 = {
 
 // Answer: a1
 var q4 = {
-    question: "Which of the following is not a JavaScript data type:",
+    question: "Which of the following is not a valid JavaScript data type:",
     a1: "int",
     a2: "undefined",
     a3: "string",
@@ -97,7 +102,7 @@ var q8 = {
     question: "Which of the following instantiates an empty array?",
     a1: "var arr = new Array[];",
     a2: "var arr = array();",
-    a3: "arr = []",
+    a3: "arr = [];",
     a4: "var arr = [];"
 }
 
@@ -134,3 +139,5 @@ var q12 = {
     a3: "A way of accessing out of scope variables",
     a4: "Refers to the owner/global object, or refers to the element that received an event"
 }
+
+var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
