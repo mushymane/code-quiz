@@ -36,6 +36,13 @@ header {
     border-radius: 3px;
 }
 
+.submit-btn {
+    background-color: rgb(185, 91, 204);
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 3px;
+}
+
 .start-btn:hover {
     background-color: rgb(182, 65, 52);
 }

@@ -141,6 +141,8 @@ var answered = false;
 var completed = false;
 var score = 0;
 
+var highscoresArray = [];
+
 // var randomizedQuestions = [];
 // for (let i = 0; i < 10; i++) {
 //     var randomNumber = Math.floor(Math.random() * questions.length);
@@ -149,17 +151,11 @@ var score = 0;
 
 function displayQuestion() {
     cardHeader[0].children[1].innerHTML = "";
-    // if (answered === false) {
-    //     console.log(obj)
-    //     console.log(obj.question)
-    // }
-    
-    // if (answered === true) {
-    //     nextQuestion();
-    // }
     console.log("score: ", score)
-    if (questions[currentQuestionIndex] === undefined) {
+    console.log(questions.length)
+    if (currentQuestionIndex > questions.length - 1) {
         completed = true;
+        // gameOver();
     } else {
         console.log("question", currentQuestion)
         console.log("question index", currentQuestionIndex)
@@ -167,7 +163,6 @@ function displayQuestion() {
         currentQuestionIndex++;
         updateQuestion();
         createAnswerButtons(currentQuestion);
-        // playing = true;
     }
 }
 
@@ -175,9 +170,9 @@ function setTimeText() {
     var timerInterval = setInterval(function() {
         timeLeft--;
         timeEl.textContent = timeLeft;
-        if(timeLeft === 0) {
+        if(timeLeft === 0 || completed === true) {
             clearInterval(timerInterval);
-            // gameOver();
+            gameOver();
         }
       }, 1000);
 }
@@ -221,9 +216,41 @@ function runGame() {
 }
 
 function gameOver() {
-    cardHeader.innerHTML = "<h1>Good job!</h1><h2>Your final score is " + score + "/10.</h2>";
-    // const form = document.createElement("form");
-    // TODO: finish
+    cardHeader[0].children[0].textContent = "Good job!";
+    cardHeader[0].children[1].textContent = "Your final score is " + score + "/10.";
+    cardContent.innerHTML = "";
+    cardFooter.textContent = "";
+
+    const form = document.createElement("form");
+    form.setAttribute("id", "initials-form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("onsubmit", "showHighscores()");
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "initials-text");
+    label.textContent = "Enter your initials: ";
+    form.append(label);
+
+    const input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("id", "initials-text");
+    input.setAttribute("name", "initials-text");
+    input.setAttribute("placeholder", "e.g. JS");
+    form.append(input);
+
+    // const submit = document.createElement("button");
+    // submit.setAttribute("id", "submit-btn");
+    // submit.textContent = "Submit";
+    cardContent.append(form)
+
+}
+
+function addScore() {
+    localStorage.setItem("highscores", JSON.stringify(highscoresArray));
+}
+
+function showHighscores() {
+    var currentHighscores = JSON.parse(localStorage.getItem("highscores"));
 }
 
 startBtnEl.addEventListener("click", function() {
@@ -232,11 +259,9 @@ startBtnEl.addEventListener("click", function() {
 });
 
 cardContent.addEventListener("click", function(event) {
+    event.stopPropagation();
     var element = event.target;
     if (element.matches("button") === true) {
-        // console.log("element:", element);
-        // console.log("element id:", element.id);
-        // console.log("answer:", randomizedQuestions[i].answer());
         if (element.textContent === currentQuestion.answer()) {
             score++;
             document.getElementById("card-footer").innerHTML = "Nicely done!";
@@ -250,3 +275,31 @@ cardContent.addEventListener("click", function(event) {
         }
     }
 });
+
+// cardContent.addEventListener("click", function(event) {
+//     event.stopPropagation();
+//     var element = event.target;
+//     if (element.matches(".submit-btn")) {
+//         var storeInitials = document.getElementById("initials").value;
+//         localStorage.setItem("todos", JSON.stringify(storeInitials));
+//         // showHighscores();
+//     }
+// })
+
+cardContent.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var initialsText = document.querySelector("#initials-text").value.trim();
+
+    if (initialsText === "") {
+        return;
+    }
+
+    var initialsAndScore = {
+        intials: initialsText,
+        score: score
+    }
+
+    highscoresArray.push(initialsAndScore);
+    addScore();
+})
