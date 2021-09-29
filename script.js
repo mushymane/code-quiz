@@ -16,12 +16,6 @@ var cardContent = document.getElementById("card-content");
 var cardFooter = document.getElementById("card-footer");
 var startBtnEl = document.querySelector(".start-btn");
 
-var timeLeft = 61;
-var questionsAnswered = 0;
-var currentQuestion;
-var answered = false;
-var score = 0;
-
 // Answer: a4
 var q1 = {
     question: "What is JavaScript used for?",
@@ -140,44 +134,41 @@ var q12 = {
 
 var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
 
-function displayQuestions() {
+var timeLeft = 200; //61
+var currentQuestionIndex = 0;
+var currentQuestion = questions[currentQuestionIndex];
+var answered = false;
+var completed = false;
+var score = 0;
+
+// var randomizedQuestions = [];
+// for (let i = 0; i < 10; i++) {
+//     var randomNumber = Math.floor(Math.random() * questions.length);
+//     randomizedQuestions.push(questions[randomNumber]);
+// }
+
+function displayQuestion() {
     cardHeader[0].children[1].innerHTML = "";
-
-    var randomizedQuestions = [];
-    for (let i = 0; i < 10; i++) {
-        var randomNumber = Math.floor(Math.random() * questions.length);
-        randomizedQuestions.push(questions[randomNumber]);
+    // if (answered === false) {
+    //     console.log(obj)
+    //     console.log(obj.question)
+    // }
+    
+    // if (answered === true) {
+    //     nextQuestion();
+    // }
+    console.log("score: ", score)
+    if (questions[currentQuestionIndex] === undefined) {
+        completed = true;
+    } else {
+        console.log("question", currentQuestion)
+        console.log("question index", currentQuestionIndex)
+        currentQuestion = questions[currentQuestionIndex];
+        currentQuestionIndex++;
+        updateQuestion();
+        createAnswerButtons(currentQuestion);
+        // playing = true;
     }
-
-    for (let i = 0; i < randomizedQuestions.length; i++) {
-        // var answered = false;
-        if (answered === false) {
-            cardHeader[0].children[0].textContent = randomizedQuestions[i].question;
-            document.getElementById("card-content").innerHTML = "";
-            console.log(randomizedQuestions[i])
-            createAnswerButtons(randomizedQuestions[i]);
-        
-            
-        }
-        continue;
-    }
-    cardContent.addEventListener("click", function(event) {
-        var element = event.target;
-        if (element.matches("button") === true) {
-            // console.log("element:", element);
-            // console.log("element id:", element.id);
-            // console.log("answer:", randomizedQuestions[i].answer());
-            if (element.textContent === randomizedQuestions[i].answer()) {
-                score++;
-                document.getElementById("card-footer").innerHTML = "Nicely done!";
-                answered = true;
-            } else {
-                timeLeft -= 5;
-                document.getElementById("card-footer").innerHTML = "Wrong!";
-                answered = true;
-            }
-        }
-    });
 }
 
 function setTimeText() {
@@ -189,6 +180,11 @@ function setTimeText() {
             // gameOver();
         }
       }, 1000);
+}
+
+function updateQuestion() {
+    document.getElementById("card-content").innerHTML = "";
+    cardHeader[0].children[0].textContent = currentQuestion.question;
 }
 
 function createAnswerButtons(obj) {
@@ -209,12 +205,18 @@ function createAnswerButtons(obj) {
 
 }
 
+function nextQuestion(){
+    // currentQuestionIndex += 1;
+    // currentQuestion = questions[currentQuestionIndex];
+    displayQuestion();
+}
+
 function runGame() {
     setTimeText();
-    if (timeLeft === 0 || questionsAnswered === 10) {
+    if (timeLeft === 0 || completed === true) {
         gameOver(); // implement
     } else {
-        displayQuestions();
+        displayQuestion();
     }
 }
 
@@ -229,3 +231,22 @@ startBtnEl.addEventListener("click", function() {
     runGame();
 });
 
+cardContent.addEventListener("click", function(event) {
+    var element = event.target;
+    if (element.matches("button") === true) {
+        // console.log("element:", element);
+        // console.log("element id:", element.id);
+        // console.log("answer:", randomizedQuestions[i].answer());
+        if (element.textContent === currentQuestion.answer()) {
+            score++;
+            document.getElementById("card-footer").innerHTML = "Nicely done!";
+            answered = true;
+            nextQuestion();
+        } else {
+            timeLeft -= 5;
+            document.getElementById("card-footer").innerHTML = "Wrong!";
+            answered = true;
+            nextQuestion();
+        }
+    }
+});
