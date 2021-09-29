@@ -1,14 +1,3 @@
-// TODO:
-
-// start button (event listener) -> timer starts (upper left), show questions
-// answers as buttons (event listener/stopPropagation?) 
-// correct answer -> display message in footer, score ++
-// wrong answer -> display message in footer, time - 5 seconds
-// game over when all questions are answered or timer reaches 0
-// card header - gj, display score, form for initials and submit button
-// save initials and score to localstorage -> submit, taken to highscores page
-// highscores page: show all highscores, go back and clear highscores buttons
-
 var timeEl = document.querySelector("#time-left");
 var cardEl = document.querySelector(".card");
 var cardHeader = document.getElementsByClassName("card-header");
@@ -16,6 +5,7 @@ var cardContent = document.getElementById("card-content");
 var cardFooter = document.getElementById("card-footer");
 var startBtnEl = document.querySelector(".start-btn");
 
+// Questions
 // Answer: a4
 var q1 = {
     question: "What is JavaScript used for?",
@@ -132,6 +122,7 @@ var q12 = {
     answer: function() {return this.a4}
 }
 
+// Variables
 var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
 
 var timeLeft = 200; //61
@@ -142,12 +133,14 @@ var score = 0;
 
 var highscoresArray = [];
 
+// Randomizes 10 questions
 // var randomizedQuestions = [];
 // for (let i = 0; i < 10; i++) {
 //     var randomNumber = Math.floor(Math.random() * questions.length);
 //     randomizedQuestions.push(questions[randomNumber]);
 // }
 
+// Updates card to display questions and answers
 function displayQuestion() {
     cardHeader[0].children[1].innerHTML = "";
     console.log("score: ", score)
@@ -165,6 +158,7 @@ function displayQuestion() {
     }
 }
 
+// Timer logic
 function setTimeText() {
     var timerInterval = setInterval(function() {
         timeLeft--;
@@ -176,14 +170,14 @@ function setTimeText() {
       }, 1000);
 }
 
+// Updates DOM to the next question in array
 function updateQuestion() {
     document.getElementById("card-content").innerHTML = "";
     cardHeader[0].children[0].textContent = currentQuestion.question;
 }
 
+// Creates a list of buttons based on the answers
 function createAnswerButtons(obj) {
-    // document.getElementById("card-content").innerHTML = "";
-
     var list = document.createElement("div");
     list.setAttribute("class", "btn-group");
 
@@ -199,26 +193,27 @@ function createAnswerButtons(obj) {
 
 }
 
+// Basically calls on display question again
 function nextQuestion(){
-    // currentQuestionIndex += 1;
-    // currentQuestion = questions[currentQuestionIndex];
     displayQuestion();
 }
 
+// Start the quiz
 function runGame() {
-    timeLeft = 200; //61
+    timeLeft = 200; 
     currentQuestionIndex = 0;
     currentQuestion = questions[currentQuestionIndex];
     completed = false;
     score = 0;
     setTimeText();
     if (timeLeft === 0 || completed === true) {
-        gameOver(); // implement
+        gameOver();
     } else {
         displayQuestion();
     }
 }
 
+// Creates elements that show score, and prompts the user to enter their initials to be saved to local storage
 function gameOver() {
     cardHeader[0].children[0].textContent = "Good job!";
     cardHeader[0].children[1].textContent = "Your final score is " + score + "/12."; // out of 10 for randomized
@@ -249,11 +244,13 @@ function gameOver() {
 
 }
 
+// Adds score to local storage
 function addScore() {
     localStorage.setItem("highscores", JSON.stringify(highscoresArray));
     showHighscores();
 }
 
+// Displays highscores
 function showHighscores() {
     var currentHighscores = JSON.parse(localStorage.getItem("highscores"));
     cardHeader[0].children[0].textContent = "Highscores";
@@ -288,12 +285,14 @@ function showHighscores() {
     cardFooter.append(buttons);
 }
 
+// Starts game when start button is clicked
 startBtnEl.addEventListener("click", function(event) {
     event.stopPropagation();
     startBtnEl.style.display = "none";
     runGame();
 });
 
+// Adds to score if correct answer was chosen, else subtract 5 seconds
 cardContent.addEventListener("click", function(event) {
     event.stopPropagation();
     var element = event.target;
@@ -320,6 +319,8 @@ cardContent.addEventListener("click", function(event) {
 //     }
 // })
 
+
+// Updates highscoresArray and local storage
 cardContent.addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -338,6 +339,7 @@ cardContent.addEventListener("submit", function(event) {
     addScore();
 });
 
+// Determines what actions to take depending on whether Go Back or Reset was chosen
 cardFooter.addEventListener("click", function(event) {
     event.preventDefault();
     event.stopPropagation();
