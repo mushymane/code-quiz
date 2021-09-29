@@ -39,3 +39,17 @@ header {
 .start-btn:hover {
     background-color: rgb(182, 65, 52);
 }
+
+.btn-group button {
+    background-color: rgb(104, 209, 204);
+    color: whitesmoke;
+    padding: 10px 10px;
+    margin: 10px;
+    cursor: pointer;
+    width: 50%;
+    display: block;
+}
+
+.btn-group button:hover {
+    background-color: rgb(119, 236, 231);
+}

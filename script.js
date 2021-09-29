@@ -9,37 +9,15 @@
 // save initials and score to localstorage -> submit, taken to highscores page
 // highscores page: show all highscores, go back and clear highscores buttons
 
-var timeEl = document.querySelector("#time");
+var timeEl = document.querySelector("#time-left");
 var cardEl = document.querySelector(".card");
-var cardHeader = document.getElementsByClassName("card-header")
+var cardHeader = document.getElementsByClassName("card-header");
+var cardContent = document.getElementsByClassName("card-content");
 var startBtnEl = document.querySelector(".start-btn");
 
-var timeLeft = 60;
+var timeLeft = 61;
+var questionsAnswered = 0;
 var score = 0;
-
-
-startBtnEl.addEventListener("click", function() {
-    if (timeLeft > 0) {
-        count--;
-        runGame();
-    }
-});
-
-function runGame() {
-    var randomizedQuestions = [];
-    for (let i = 0; i < 10; i++) {
-        var randomNumber = Math.floor(Math.random() * questions.length);
-        randomizedQuestions.push(questions[randomNumber]);
-    }
-    // document.getElementsByClassName("card-header").innerHTML = "";
-    while (timeLeft > 0) {
-        // display questions
-        // display answers (listen for click)
-        // display footer (correct/wrong(decrease time))
-    }
-    cardHeader.innerHTML = "<h1>Good job!</h1><h2>Your final score is " + score + "/10.</h2>";
-    // const form = document.createElement("form");
-}
 
 // Answer: a4
 var q1 = {
@@ -160,5 +138,65 @@ var q12 = {
 var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
 
 function displayQuestions() {
-
+    var randomizedQuestions = [];
+    for (let i = 0; i < 10; i++) {
+        var randomNumber = Math.floor(Math.random() * questions.length);
+        randomizedQuestions.push(questions[randomNumber]);
+    }
+    document.getElementsByClassName("card-header").innerHTML = "";
+    for (let i = 0; i < randomizedQuestions.length; i++) {
+        cardHeader[0].children[0].textContent = randomizedQuestions[i].question;
+        // cardContent.
+    }
+    // while (timeLeft > 0) { // if?
+    //     // display questions
+    //     // display answers (listen for click)
+    //     // display footer (correct/wrong(decrease time))
+    // }
 }
+
+function setTimeText() {
+    var timerInterval = setInterval(function() {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if(secondsLeft === 0) {
+            clearInterval(timerInterval);
+            sendMessage();
+        }
+      }, 1000);
+}
+
+function createAnswerButtons(obj) {
+    var list = document.createElement("ol");
+    list.setAttribute("class", "btn-group");
+    for (let answer in obj) {
+        if (answer === "a1" || answer === "a2" || answer === "a3" || answer === "a4") {
+            var listItem = document.createElement("li");
+            listItem.textContent = obj[answer];
+        }
+    }
+}
+
+function runGame() {
+    setTimeText();
+    if (timeLeft === 0 || questionsAnswered === 10) {
+        gameOver(); // implement
+    } else {
+        displayQuestions();
+    }
+}
+
+function gameOver() {
+    cardHeader.innerHTML = "<h1>Good job!</h1><h2>Your final score is " + score + "/10.</h2>";
+    // const form = document.createElement("form");
+    // TODO: finish
+}
+
+startBtnEl.addEventListener("click", function() {
+    // if (timeLeft > 0) {
+    //     count--;
+    //     runGame();
+    // }
+    startBtnEl.style.display = "none";
+    runGame();
+});
