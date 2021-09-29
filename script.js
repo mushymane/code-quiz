@@ -137,7 +137,6 @@ var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
 var timeLeft = 200; //61
 var currentQuestionIndex = 0;
 var currentQuestion = questions[currentQuestionIndex];
-var answered = false;
 var completed = false;
 var score = 0;
 
@@ -207,6 +206,11 @@ function nextQuestion(){
 }
 
 function runGame() {
+    timeLeft = 200; //61
+    currentQuestionIndex = 0;
+    currentQuestion = questions[currentQuestionIndex];
+    completed = false;
+    score = 0;
     setTimeText();
     if (timeLeft === 0 || completed === true) {
         gameOver(); // implement
@@ -217,7 +221,7 @@ function runGame() {
 
 function gameOver() {
     cardHeader[0].children[0].textContent = "Good job!";
-    cardHeader[0].children[1].textContent = "Your final score is " + score + "/10.";
+    cardHeader[0].children[1].textContent = "Your final score is " + score + "/12."; // out of 10 for randomized
     cardContent.innerHTML = "";
     cardFooter.textContent = "";
 
@@ -229,31 +233,63 @@ function gameOver() {
     const label = document.createElement("label");
     label.setAttribute("for", "initials-text");
     label.textContent = "Enter your initials: ";
-    form.append(label);
+    form.appendChild(label);
 
     const input = document.createElement("input");
     input.setAttribute("type", "text");
     input.setAttribute("id", "initials-text");
     input.setAttribute("name", "initials-text");
     input.setAttribute("placeholder", "e.g. JS");
-    form.append(input);
+    form.appendChild(input);
 
     // const submit = document.createElement("button");
     // submit.setAttribute("id", "submit-btn");
     // submit.textContent = "Submit";
-    cardContent.append(form)
+    cardContent.appendChild(form)
 
 }
 
 function addScore() {
     localStorage.setItem("highscores", JSON.stringify(highscoresArray));
+    showHighscores();
 }
 
 function showHighscores() {
     var currentHighscores = JSON.parse(localStorage.getItem("highscores"));
+    cardHeader[0].children[0].textContent = "Highscores";
+    cardHeader[0].children[1].textContent = "";
+    document.getElementById("card-content").innerHTML = "";
+    var list = document.createElement("ol");
+    cardContent.append(list);
+
+    for (let player in currentHighscores) {
+        console.log(currentHighscores);
+        console.log(player)
+        var li = document.createElement("li");
+        li.textContent = player + " - " + currentHighscores[player];
+    
+        list.appendChild(li);
+    }
+    cardContent.append(list);
+
+    var buttons = document.createElement("div");
+    buttons.setAttribute("class", "score-btns");
+
+    var goBackButton = document.createElement("button");
+    goBackButton.setAttribute("id", "main-page");
+    goBackButton.textContent = "Go Back";
+    buttons.append(goBackButton);
+
+    var resetButton = document.createElement("button");
+    resetButton.setAttribute("id", "reset");
+    resetButton.textContent = "Reset Highscores";
+    buttons.append(resetButton);
+
+    cardFooter.append(buttons);
 }
 
-startBtnEl.addEventListener("click", function() {
+startBtnEl.addEventListener("click", function(event) {
+    event.stopPropagation();
     startBtnEl.style.display = "none";
     runGame();
 });
@@ -265,12 +301,10 @@ cardContent.addEventListener("click", function(event) {
         if (element.textContent === currentQuestion.answer()) {
             score++;
             document.getElementById("card-footer").innerHTML = "Nicely done!";
-            answered = true;
             nextQuestion();
         } else {
             timeLeft -= 5;
             document.getElementById("card-footer").innerHTML = "Wrong!";
-            answered = true;
             nextQuestion();
         }
     }
@@ -289,7 +323,7 @@ cardContent.addEventListener("click", function(event) {
 cardContent.addEventListener("submit", function(event) {
     event.preventDefault();
 
-    var initialsText = document.querySelector("#initials-text").value.trim();
+    var initialsText = document.querySelector("#initials-text").value;
 
     if (initialsText === "") {
         return;
@@ -302,4 +336,26 @@ cardContent.addEventListener("submit", function(event) {
 
     highscoresArray.push(initialsAndScore);
     addScore();
-})
+});
+
+cardFooter.addEventListener("click", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var element = event.target;
+
+    if (element.matches("#main-page")) {
+        cardHeader[0].children[0].textContent = "Code Quiz";
+        cardHeader[0].children[1].textContent = "Answer the following JavaScript questions and beat the time limit. You get one point for answering correctly, and lose 10 seconds for answering incorrectly! Good luck!";
+        document.getElementById("card-content").innerHTML = "";
+        cardFooter.innerHTML = "";
+        // startBtnEl.style.display = "flex";
+        var startBtn = document.createElement("button");
+        startBtn.setAttribute("class", "start-btn");
+        startBtn.textContent = "Start Quiz";
+        cardFooter.append(startBtn);
+    } else if (element.matches("#reset")) {
+        highscoresArray = [];
+        addScore();
+    }
+});
+
