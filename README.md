@@ -6,7 +6,7 @@ Test your JavaScript knowledge with a quick coding quiz. This site provides mult
 To view the web page visit this [link](https://mushymane.github.io/code-quiz/)
 
 ## Preview
-![alt preview](assets/preview.png)
+![alt preview](assets/preview.gif)
 
 ## Technologies Used
 - HTML - used to structure and create elements on the DOM
