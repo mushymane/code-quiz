@@ -13,10 +13,13 @@ var timeEl = document.querySelector("#time-left");
 var cardEl = document.querySelector(".card");
 var cardHeader = document.getElementsByClassName("card-header");
 var cardContent = document.getElementById("card-content");
+var cardFooter = document.getElementById("card-footer");
 var startBtnEl = document.querySelector(".start-btn");
 
 var timeLeft = 61;
 var questionsAnswered = 0;
+var currentQuestion;
+var answered = false;
 var score = 0;
 
 // Answer: a4
@@ -147,15 +150,34 @@ function displayQuestions() {
     }
 
     for (let i = 0; i < randomizedQuestions.length; i++) {
-        cardHeader[0].children[0].textContent = randomizedQuestions[i].question;
+        // var answered = false;
+        if (answered === false) {
+            cardHeader[0].children[0].textContent = randomizedQuestions[i].question;
+            document.getElementById("card-content").innerHTML = "";
+            console.log(randomizedQuestions[i])
+            createAnswerButtons(randomizedQuestions[i]);
         
-        createAnswerButtons(randomizedQuestions[i]);
+            
+        }
+        continue;
     }
-    // while (timeLeft > 0) { // if?
-    //     // display questions
-    //     // display answers (listen for click)
-    //     // display footer (correct/wrong(decrease time))
-    // }
+    cardContent.addEventListener("click", function(event) {
+        var element = event.target;
+        if (element.matches("button") === true) {
+            // console.log("element:", element);
+            // console.log("element id:", element.id);
+            // console.log("answer:", randomizedQuestions[i].answer());
+            if (element.textContent === randomizedQuestions[i].answer()) {
+                score++;
+                document.getElementById("card-footer").innerHTML = "Nicely done!";
+                answered = true;
+            } else {
+                timeLeft -= 5;
+                document.getElementById("card-footer").innerHTML = "Wrong!";
+                answered = true;
+            }
+        }
+    });
 }
 
 function setTimeText() {
@@ -164,13 +186,13 @@ function setTimeText() {
         timeEl.textContent = timeLeft;
         if(timeLeft === 0) {
             clearInterval(timerInterval);
-            sendMessage();
+            // gameOver();
         }
       }, 1000);
 }
 
 function createAnswerButtons(obj) {
-    document.getElementById("card-content").innerHTML = "";
+    // document.getElementById("card-content").innerHTML = "";
 
     var list = document.createElement("div");
     list.setAttribute("class", "btn-group");
@@ -178,11 +200,13 @@ function createAnswerButtons(obj) {
     for (let answer in obj) {
         if (answer === "a1" || answer === "a2" || answer === "a3" || answer === "a4") {
             var listItem = document.createElement("button");
+            listItem.setAttribute("id", answer);
             listItem.textContent = obj[answer];
             list.append(listItem);
         }
     }
     cardContent.append(list);
+
 }
 
 function runGame() {
@@ -204,3 +228,4 @@ startBtnEl.addEventListener("click", function() {
     startBtnEl.style.display = "none";
     runGame();
 });
+
