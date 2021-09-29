@@ -12,7 +12,7 @@
 var timeEl = document.querySelector("#time-left");
 var cardEl = document.querySelector(".card");
 var cardHeader = document.getElementsByClassName("card-header");
-var cardContent = document.getElementsByClassName("card-content");
+var cardContent = document.getElementById("card-content");
 var startBtnEl = document.querySelector(".start-btn");
 
 var timeLeft = 61;
@@ -86,7 +86,7 @@ var q7 = {
     a2: "False",
     answer: function() {return this.a2}
 }
-console.log(q7.answer())
+
 // Answer: a4
 var q8 = {
     question: "Which of the following instantiates an empty array?",
@@ -138,15 +138,18 @@ var q12 = {
 var questions = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12];
 
 function displayQuestions() {
+    cardHeader[0].children[1].innerHTML = "";
+
     var randomizedQuestions = [];
     for (let i = 0; i < 10; i++) {
         var randomNumber = Math.floor(Math.random() * questions.length);
         randomizedQuestions.push(questions[randomNumber]);
     }
-    document.getElementsByClassName("card-header").innerHTML = "";
+
     for (let i = 0; i < randomizedQuestions.length; i++) {
         cardHeader[0].children[0].textContent = randomizedQuestions[i].question;
-        // cardContent.
+        
+        createAnswerButtons(randomizedQuestions[i]);
     }
     // while (timeLeft > 0) { // if?
     //     // display questions
@@ -159,7 +162,7 @@ function setTimeText() {
     var timerInterval = setInterval(function() {
         timeLeft--;
         timeEl.textContent = timeLeft;
-        if(secondsLeft === 0) {
+        if(timeLeft === 0) {
             clearInterval(timerInterval);
             sendMessage();
         }
@@ -167,14 +170,19 @@ function setTimeText() {
 }
 
 function createAnswerButtons(obj) {
-    var list = document.createElement("ol");
+    document.getElementById("card-content").innerHTML = "";
+
+    var list = document.createElement("div");
     list.setAttribute("class", "btn-group");
+
     for (let answer in obj) {
         if (answer === "a1" || answer === "a2" || answer === "a3" || answer === "a4") {
-            var listItem = document.createElement("li");
+            var listItem = document.createElement("button");
             listItem.textContent = obj[answer];
+            list.append(listItem);
         }
     }
+    cardContent.append(list);
 }
 
 function runGame() {
@@ -193,10 +201,6 @@ function gameOver() {
 }
 
 startBtnEl.addEventListener("click", function() {
-    // if (timeLeft > 0) {
-    //     count--;
-    //     runGame();
-    // }
     startBtnEl.style.display = "none";
     runGame();
 });

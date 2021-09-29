@@ -42,12 +42,13 @@ header {
 
 .btn-group button {
     background-color: rgb(104, 209, 204);
-    color: whitesmoke;
+    font-size: large;
+    color: black;
     padding: 10px 10px;
     margin: 10px;
     cursor: pointer;
     width: 50%;
-    display: block;
+    /* display: block; */
 }
 
 .btn-group button:hover {
